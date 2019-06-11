@@ -67,7 +67,7 @@ class SpanStack
     public function buildContext(array $carrier)
     {
         foreach ($carrier as $key =>  &$value){
-            if(is_array($value)){
+            if(is_array($value)&&!empty($value)){
                 $value = $value[0];
             }
         }
