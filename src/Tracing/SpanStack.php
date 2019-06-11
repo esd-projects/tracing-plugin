@@ -19,7 +19,7 @@ class SpanStack
     /**
      * @var Span[]
      */
-    private $spans;
+    private $spans = [];
     /**
      * @var Tracer
      */
