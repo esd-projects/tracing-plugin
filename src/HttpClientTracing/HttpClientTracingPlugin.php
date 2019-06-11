@@ -54,15 +54,17 @@ class HttpClientTracingPlugin extends AbstractPlugin
         $aopConfig = DIget(AopConfig::class);
         $tracingConfig = DIget(TracingConfig::class);
         if ($tracingConfig->isEnable()) {
-            if ($aopConfig instanceof AopConfig) {
-                $aopConfig->addIncludePath(Server::$instance->getServerConfig()->getVendorDir() . "/swlib/saber/src");
-                $aopConfig->addIncludePath(Server::$instance->getServerConfig()->getVendorDir() . "/guzzlehttp/guzzle/src");
-                $aopConfig->addExcludePath(Server::$instance->getServerConfig()->getVendorDir() . "/guzzlehttp/guzzle/src/Cookie");
-                $aopConfig->addExcludePath(Server::$instance->getServerConfig()->getVendorDir() . "/guzzlehttp/guzzle/src/Exception");
-                $aopConfig->addExcludePath(Server::$instance->getServerConfig()->getVendorDir() . "/guzzlehttp/guzzle/src/Handler");
-            }
             $aopConfig->addAspect(new SaberTracingAspect());
-            $aopConfig->addAspect(new GuzzleTracingAspect());
+            if(interface_exists('GuzzleHttp\ClientInterface')){
+                if ($aopConfig instanceof AopConfig) {
+                    $aopConfig->addIncludePath(Server::$instance->getServerConfig()->getVendorDir() . "/swlib/saber/src");
+                    $aopConfig->addIncludePath(Server::$instance->getServerConfig()->getVendorDir() . "/guzzlehttp/guzzle/src");
+                    $aopConfig->addExcludePath(Server::$instance->getServerConfig()->getVendorDir() . "/guzzlehttp/guzzle/src/Cookie");
+                    $aopConfig->addExcludePath(Server::$instance->getServerConfig()->getVendorDir() . "/guzzlehttp/guzzle/src/Exception");
+                    $aopConfig->addExcludePath(Server::$instance->getServerConfig()->getVendorDir() . "/guzzlehttp/guzzle/src/Handler");
+                }
+                $aopConfig->addAspect(new GuzzleTracingAspect());
+            }
             $aopConfig->merge();
         }
     }
