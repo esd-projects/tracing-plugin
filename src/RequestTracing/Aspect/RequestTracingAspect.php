@@ -80,15 +80,17 @@ class RequestTracingAspect extends OrderAspect
     protected function aroundTcpReceive(MethodInvocation $invocation)
     {
         $spanStack = SpanStack::get();
-        $clientData = getDeepContextValueByClassName(ClientData::class);
-        $span = $spanStack->startSpan($clientData->getRequest()->getMethod());
-        $span->setTag(SPAN_KIND, SPAN_KIND_RPC_SERVER);
-        $span->setTag("method", "tcp");
-        $span->setTag("path", $clientData->getPath());
-        $span->setTag(COMPONENT, "ESD Server");
-        defer(function () use ($span, $spanStack) {
-            $spanStack->pop();
-        });
+        if ($spanStack != null) {
+            $clientData = getDeepContextValueByClassName(ClientData::class);
+            $span = $spanStack->startSpan($clientData->getRequest()->getMethod());
+            $span->setTag(SPAN_KIND, SPAN_KIND_RPC_SERVER);
+            $span->setTag("method", "tcp");
+            $span->setTag("path", $clientData->getPath());
+            $span->setTag(COMPONENT, "ESD Server");
+            defer(function () use ($span, $spanStack) {
+                $spanStack->pop();
+            });
+        }
         $invocation->proceed();
     }
 
@@ -126,15 +128,17 @@ class RequestTracingAspect extends OrderAspect
     protected function aroundUdpPacket(MethodInvocation $invocation)
     {
         $spanStack = SpanStack::get();
-        $clientData = getDeepContextValueByClassName(ClientData::class);
-        $span = $spanStack->startSpan($clientData->getRequest()->getMethod());
-        $span->setTag(SPAN_KIND, SPAN_KIND_RPC_SERVER);
-        $span->setTag("method", "udp");
-        $span->setTag("path", $clientData->getPath());
-        $span->setTag(COMPONENT, "ESD Server");
-        defer(function () use ($span, $spanStack) {
-            $spanStack->pop();
-        });
+        if ($spanStack != null) {
+            $clientData = getDeepContextValueByClassName(ClientData::class);
+            $span = $spanStack->startSpan($clientData->getRequest()->getMethod());
+            $span->setTag(SPAN_KIND, SPAN_KIND_RPC_SERVER);
+            $span->setTag("method", "udp");
+            $span->setTag("path", $clientData->getPath());
+            $span->setTag(COMPONENT, "ESD Server");
+            defer(function () use ($span, $spanStack) {
+                $spanStack->pop();
+            });
+        }
         $invocation->proceed();
     }
 }
