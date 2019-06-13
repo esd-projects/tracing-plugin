@@ -14,14 +14,22 @@ use ESD\Plugins\HttpClientTracing\HttpClientTracingPlugin;
 use ESD\Plugins\MethodTracing\MethodTracingPlugin;
 use ESD\Plugins\RequestTracing\RequestTracingPlugin;
 
-class Application extends GoApplication
+class Application
 {
-    public function configure()
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \ESD\Core\Exception
+     * @throws \ESD\Core\Plugins\Config\ConfigException
+     * @throws \ReflectionException
+     */
+    public static function main()
     {
-        $this->addPlug(new RequestTracingPlugin());
-        $this->addPlug(new DBTracingPlugin());
-        $this->addPlug(new MethodTracingPlugin());
-        $this->addPlug(new HttpClientTracingPlugin());
-        parent::configure();
+        $application = new GoApplication();
+        $application->addPlug(new RequestTracingPlugin());
+        $application->addPlug(new DBTracingPlugin());
+        $application->addPlug(new MethodTracingPlugin());
+        $application->addPlug(new HttpClientTracingPlugin());
+        $application->run();
     }
 }
